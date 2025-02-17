@@ -13,6 +13,11 @@ app.use(express.json());
 // Connect to DB
 connectDB();
 
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval';");
+    next();
+});
+
 app.get("/", (req, res) => {
     res.send("✅ Backend is running!");
 });
