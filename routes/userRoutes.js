@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all users
 router.get("/", async (req, res) => {
     try {
-        const users = await User.find({}, "username telegramId createdAt"); // Select fields
+        const users = await User.find(); // ✅ Fetch full user data
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: "Error fetching users" });
@@ -14,3 +14,4 @@ router.get("/", async (req, res) => {
 });
 
 module.exports = router;
+
