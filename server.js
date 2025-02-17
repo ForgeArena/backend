@@ -9,7 +9,7 @@ const app = express();
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy",
         "default-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; " +  // ✅ Allow blob URLs
         "img-src 'self' data: https://pos.baidu.com; " + 
         "connect-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com;");
     next();
