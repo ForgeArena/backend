@@ -1,5 +1,5 @@
-require("dotenv").config({ path: "../config/.env" });
-const { Telegraf } = require("telegraf");
+require("dotenv").config({ path: __dirname + "/../config/.env" }); 
+const { Telegraf, Markup } = require("telegraf");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 
@@ -32,12 +32,10 @@ bot.start(async (ctx) => {
         // Display user profile
         ctx.reply(`📜 Your Profile:\n👤 Username: ${user.username}\n🆔 Telegram ID: ${user.telegramId}`);
 
-        // Send "Play" button
+         // Play Button
         ctx.reply(
             "🎮 Click below to play:",
-            Markup.inlineKeyboard([
-                Markup.button.webApp("▶️ Play", FRONTEND_URL)
-            ])
+            Markup.inlineKeyboard([Markup.button.webApp("▶️ Play", process.env.GAME_URL)])
         );
     } catch (error) {
         console.error("Error handling /start:", error);
