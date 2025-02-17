@@ -1,30 +1,50 @@
-require("dotenv").config();
-const { Telegraf, Markup } = require("telegraf");
+require("dotenv").config({ path: "../config/.env" });
+const { Telegraf } = require("telegraf");
+const mongoose = require("mongoose");
 const User = require("../models/User");
-const connectDB = require("../config/db");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// Connect to DB
-connectDB();
-
-// Start Command
-bot.start(async (ctx) => {
-    const user = await User.findOne({ telegramId: ctx.from.id });
-
-    if (!user) {
-        await User.create({
-        username: ctx.from.username || "Unknown",
-        telegramId: ctx.from.id,
-        });
-    }
-
-    ctx.reply(
-        "Welcome! Click Play to start the game.",
-        Markup.inlineKeyboard([
-        Markup.button.webApp("▶️ Play", process.env.GAME_URL),
-        ])
-    );
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
+// Handle `/start` command
+bot.start(async (ctx) => {
+    try {
+        const telegramId = ctx.from.id.toString(); // Convert Telegram ID to string
+        const username = ctx.from.username || `User_${telegramId}`; // Use Telegram username if available
+
+        // Check if user already exists
+        let user = await User.findOne({ telegramId });
+
+        if (!user) {
+            // Create new user
+            user = new User({ username, telegramId });
+            await user.save();
+            ctx.reply(`✅ Welcome, ${username}! You are now registered.`);
+        } else {
+            ctx.reply(`👋 Welcome back, ${user.username}!`);
+        }
+
+        // Display user profile
+        ctx.reply(`📜 Your Profile:\n👤 Username: ${user.username}\n🆔 Telegram ID: ${user.telegramId}`);
+
+        // Send "Play" button
+        ctx.reply(
+            "🎮 Click below to play:",
+            Markup.inlineKeyboard([
+                Markup.button.webApp("▶️ Play", FRONTEND_URL)
+            ])
+        );
+    } catch (error) {
+        console.error("Error handling /start:", error);
+        ctx.reply("❌ An error occurred. Please try again later.");
+    }
+});
+
+// Start the bot
 bot.launch();
+console.log("🤖 Telegram bot is running...");
