@@ -9,9 +9,10 @@ const app = express();
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy",
         "default-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; " +  // ✅ Allow blob URLs
-        "img-src 'self' data: https://pos.baidu.com; " + 
-        "connect-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com;");
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com; " +  // ✅ Allow Google Analytics scripts
+        "img-src 'self' data: https://pos.baidu.com https://www.google-analytics.com; " +  // ✅ Allow Google Analytics tracking images
+        "connect-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com https://www.google-analytics.com; " +  // ✅ Allow Google Analytics API calls
+        "frame-src 'self' https://www.youtube.com https://www.google.com;");  // ✅ Allow Google iframes
     next();
 });
 
