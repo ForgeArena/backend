@@ -13,6 +13,10 @@ app.use(express.json());
 // Connect to DB
 connectDB();
 
+app.get("/", (req, res) => {
+    res.send("✅ Backend is running!");
+});
+
 // Routes
 app.use("/api/users", userRoutes);
 
