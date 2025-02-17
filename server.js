@@ -6,6 +6,15 @@ const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy",
+        "default-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+        "img-src 'self' data: https://pos.baidu.com; " + 
+        "connect-src 'self' https://backend-farn.onrender.com https://frontend-r03x.onrender.com;");
+    next();
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -13,10 +22,6 @@ app.use(express.json());
 // Connect to DB
 connectDB();
 
-app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval';");
-    next();
-});
 
 app.get("/", (req, res) => {
     res.send("✅ Backend is running!");
